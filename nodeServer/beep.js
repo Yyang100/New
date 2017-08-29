@@ -5,7 +5,10 @@ var io = require('socket.io')({
 io.attach(4567);
 
 io.on('connection', function(socket){
-	socket.on('beep', function(){
-		socket.emit('boop');
+	socket.on('222', function(){
+		var msg={
+			res:1232
+		};
+		socket.emit('111',msg);
 	});
 })
