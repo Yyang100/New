@@ -2,24 +2,29 @@ var socketio = require('socket.io')({
     transport:['websocket'],
 });
 
-socketio.attach(4567);
+socketio.attach(8080);
 
 var sqlOperate = require('./sqlOperate.js');
+var messageids=require('./MessageID.js');
 
 var users = {};
-
+var mSocket;
 socketio.on('connect', function (socket) {
-    socket.on('222', function (data) {
+    mSocket=socket;
+    BindSigal(messageids.login,login);
+
+
+    function login(data) {
         users[data] = socket;
-        console.log(users);
-        var msg={
-            res:socket.id
-        };
+        //console.log(users);
         console.log(data);
-        var userinfos = JSON.parse(JSON.stringify(data));
-        sqlOperate.login(userinfos.id,
-            socket.emit('111',msg));
-    });
+        var userAcc = JSON.parse(JSON.stringify(data));
+         sqlOperate.login(userAcc,loginRsp);
+    }
+    function  loginRsp(msg) {
+        console.log(msg);
+        SendMsg(messageids.loginRsp,msg);
+    }
 
     socket.on('privatemsg', function (from, to, msg) {
         console.log('I received a private message by ', from, ' say to ', to, msg);
@@ -29,6 +34,13 @@ socketio.on('connect', function (socket) {
     });
     socket.on('disconnect', function () {
         console.log('connection is disconnect! ');
-        console.log(users);
+        //console.log(users);
     });
 })
+
+function BindSigal(key,call) {
+    mSocket.on(key.toString(),call);
+}
+function  SendMsg(key,msg) {
+    mSocket.emit(key.toString(),msg);
+}

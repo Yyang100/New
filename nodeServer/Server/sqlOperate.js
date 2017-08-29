@@ -1,52 +1,73 @@
 var operate = {};
 var mySql = require('./mySqlServer.js');
-operate.login = function (req, rsp) {
-    mySql.query('select * from userinfo where user="' + req + '"',
+operate.login = function (userAcc,rsp) {
+    mySql.query('select * from Account where acc="' + userAcc.acc + '"',
         function (err, result) {
             if (err) {
                 console.log(err);
             }
             else {
                 var userinfos = JSON.parse(JSON.stringify(result));
-                console.log(userinfos);
                 var msg = {
-                    resultid: 0,
+                    res: 0,
                     des: "",
                     user: ""
                 };
                 if (userinfos.length <= 0) {
-                    msg.resultid = -1;
+                    msg.res = -1;
                     msg.des = "帐号不存在";
-                    //rsp.send(msg);
-                    rsp();
+                    rsp(msg);
                     return;
                 }
                 var succ = false;
+                var uin;
                 for (var i = 0; i < userinfos.length; i++) {
-                    if (userinfos[i].user == req.query.user && userinfos[i].password == req.query.pw) {
+                    if (userinfos[i].acc == userAcc.acc && userinfos[i].pw == userAcc.pw) {
                         succ = true;
-                        msg.user = userinfos[i].user;
+                        uin=userinfos[i].uin;
                         break;
                     }
                 }
                 if (succ) {
-                    msg.resultid = 0;
-                    msg.des = "suc";
-                    // rsp.send(msg);
-                    rsp();
+                    mySql.query('select * from userInfo where uin="' + uin + '"',
+                        function (err, result) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            else {
+                                userinfos = JSON.parse(JSON.stringify(result));
+                                var msg = {
+                                    res: 0,
+                                    des: "",
+                                    user: ""
+                                };
+                                if (userinfos.length <= 0) {
+                                    //创建角色？
+                                }
+                                for (var i = 0; i < userinfos.length; i++) {
+                                    if (userinfos[i].uin == uin) {
+                                        msg.res = 0;
+                                        msg.user = userinfos[i];
+                                        msg.des = "ok";
+                                        rsp(msg);
+                                        break;
+                                    }
+                                }
+                            }
+                        });
                 }
                 else {
-                    msg.resultid = 101;
+                    msg.res = 101;
                     msg.des = "password fail";
                     // rsp.send(msg);
-                    rsp();
+                    rsp(msg);
                 }
             }
         });
 };
 
 operate.registeruser = function (req, rsp) {
-    mySql.query('select * from userinfo where user="' + req.query.user + '"',
+    mySql.query('select * from userinfo where uin="' + req.query.user + '"',
         function (err, result) {
             if (err) {
                 console.log(err);
