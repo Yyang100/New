@@ -13,7 +13,7 @@ socketio.on('connect', function (socket) {
     mSocket=socket;
     BindSigal(messageids.login,login);
 
-
+    //登录
     function login(data) {
         users[data] = socket;
         //console.log(users);

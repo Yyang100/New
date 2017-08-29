@@ -12,6 +12,7 @@ public class NetManager : MonoBehaviour {
 	// Use this for initialization
 	void Awake () {
 		Instance = this;
+		DontDestroyOnLoad (gameObject);
 		socket = GetComponent<SocketIOComponent> ();
 		socket.autoConnect = true;
 //		socket.url = "";
@@ -21,6 +22,7 @@ public class NetManager : MonoBehaviour {
 		socket.On("open", SocketOpen);
 		socket.On("error", SocketErr);
 		socket.On("close", SocketClose);
+		BindSignal ();
 	}
 
 	public void doConnect()
@@ -66,5 +68,11 @@ public class NetManager : MonoBehaviour {
 	public void SendMessage(int key,JSONObject data,Action<JSONObject> call)
 	{
 		socket.Emit (key.ToString(),data,call);
+	}
+
+
+	void BindSignal()
+	{
+		
 	}
 }
