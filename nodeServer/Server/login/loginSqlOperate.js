@@ -1,5 +1,5 @@
 var operate = {};
-var mySql = require('./mySqlServer.js');
+var mySql = require('../mySqlServer.js');
 operate.login = function (userAcc,rsp) {
     mySql.query('select * from Account where acc="' + userAcc.acc + '"',
         function (err, result) {
