@@ -52,8 +52,11 @@ namespace strange.extensions.context.impl
 		/// </summary>
 		protected virtual void OnDestroy()
 		{
-			if (context != null)
-				Context.firstContext.RemoveContext(context);
+			try {
+				if (context != null)
+					Context.firstContext.RemoveContext (context);
+			} catch {
+			}
 		}
 
 		#region IView implementation
