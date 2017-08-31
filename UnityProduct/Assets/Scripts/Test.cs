@@ -24,7 +24,7 @@ public class Test : MonoBehaviour {
 	public void TestBoop(SocketIOEvent e)
 	{
 		Debug.Log("[SocketIO] Boop received: " + e.name + " " + e.data);
-		Tt.text = e.name + ":" + e.data;
+		//Tt.text = e.name + ":" + e.data;
 		if (e.data == null) { return; }
 
 		Debug.Log(
